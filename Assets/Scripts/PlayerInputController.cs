@@ -1,31 +1,39 @@
+/// <summary>
+/// Mario 64 Style Character Controller for Unity
+/// 
+/// Written by Gaz Robinson, 2023
+/// </summary>
+
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+#endif
 
 namespace GaRo
 {
     [RequireComponent(typeof(PlatformPlayerController))]
     public class PlayerInputController : MonoBehaviour
     {
-        PlatformPlayerController m_Player;
+        PlatformPlayerController Player;
         private void Awake()
         {
-            m_Player = GetComponent<PlatformPlayerController>();
+            Player = GetComponent<PlatformPlayerController>();
         }
-
+#if ENABLE_INPUT_SYSTEM
         public void OnInputMove(InputAction.CallbackContext context)
         {
-            m_Player.SetInputDirection(context.ReadValue<Vector2>());
+            Player.SetInputDirection(context.ReadValue<Vector2>());
         }
 
         public void OnInputJump(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Started)
             {
-                m_Player.SetJump(true);
+                Player.SetJump(true);
             }
             else if (context.phase == InputActionPhase.Canceled)
             {
-                m_Player.SetJump(false);
+                Player.SetJump(false);
             }
         }
 
@@ -35,5 +43,20 @@ namespace GaRo
             if (context.phase == InputActionPhase.Canceled)
                 Time.timeScale = 1.0f;
         }
+#else
+        void Update(){
+            Vector2 InputDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            Player.SetInputDirection(InputDirection);
+
+            if(Input.GetButtonDown("Jump"))
+            {
+                Player.SetJump(true);
+            }
+            if (Input.GetButtonUp("Jump"))
+            {
+                Player.SetJump(false);
+            }
+        }
+#endif
     }
 }

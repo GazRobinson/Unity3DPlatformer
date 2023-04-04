@@ -1,0 +1,10 @@
+newmtl ProBuilderBlue
+map_Kd GridBox_Blue.png
+Kd 1 1 1
+d 1
+
+newmtl ProBuilderWhite
+map_Kd GridBox_Default.png
+Kd 1 1 1
+d 1
+

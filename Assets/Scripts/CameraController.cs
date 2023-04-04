@@ -1,3 +1,15 @@
+/// <summary>
+/// 2-type Camera Controller for PlatformPlayerController
+/// Warning: This is considered very pre-alpha and unfinished
+/// 
+/// TODO:
+///     Uncouple from PlatformPlayerController, and make it more generic
+///     Split the two camera types up - share a base class
+///     Make the Lakitu camera more accurate to Mario 64
+/// 
+/// Written by Gaz Robinson, 2023
+/// </summary>
+
 using UnityEngine;
 
 namespace GaRo
@@ -26,17 +38,22 @@ namespace GaRo
         Vector3 lookAt = Vector3.zero;
 
         Vector3 tester;
+#if ENABLE_INPUT_SYSTEM
         public void SetInput(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
             CameraInput = context.ReadValue<Vector2>();
         }
-
+#endif
         // Update is called once per frame
         void LateUpdate()
         {
-            
+#if !ENABLE_INPUT_SYSTEM
+            CameraInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+#endif         
             if (UseLakituCam)
             {
+                // Use the Mario 64 style camera
+                // This is unfinished
                 LakituCam();
 			}
 			else
@@ -55,7 +72,7 @@ namespace GaRo
             orig = Quaternion.AngleAxis(Yaw, Vector3.up) * pos;
 
             tester = LookAtTarget.position + orig;
-            pos = orig.normalized * Distance;// Vector3.ClampMagnitude(pos, Distance);
+            pos = orig.normalized * Distance;
             if(Mathf.Abs(Yaw) > 0)
 			{
                 transform.position = LookAtTarget.position + orig;
